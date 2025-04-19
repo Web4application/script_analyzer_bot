@@ -1,16 +1,23 @@
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return;
+const express = require('express');
+const { BotFrameworkAdapter } = require('botbuilder');
+const { ScriptAnalyzerBot } = require('./bots/ScriptAnalyzerBot');
 
-  if (interaction.commandName === 'analyze') {
-    const text = interaction.options.getString('text');
+const adapter = new BotFrameworkAdapter({
+    appId: process.env.MicrosoftAppId || '',
+    appPassword: process.env.MicrosoftAppPassword || ''
+});
 
-    try {
-      const response = await axios.post('http://localhost:3000/api/analyze', { text });
-      const result = response.data.analysis;
-      await interaction.reply(`Analysis: ${result}`);
-    } catch (error) {
-      console.error('Analysis failed:', error.message);
-      await interaction.reply('Something went wrong analyzing the text.');
-    }
-  }
+const bot = new ScriptAnalyzerBot();
+const app = express();
+app.use(express.json());
+
+app.post('/api/messages', (req, res) => {
+    adapter.processActivity(req, res, async (context) => {
+        await bot.run(context);
+    });
+});
+
+const port = process.env.PORT || 3978;
+app.listen(port, () => {
+    console.log(`🤖 Bot is running at http://localhost:${port}/api/messages`);
 });
