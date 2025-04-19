@@ -4,6 +4,7 @@ const path = require('path');
 const { MemoryStorage, UserState } = require('botbuilder');
 const memoryStorage = new MemoryStorage();
 const userState = new UserState(memoryStorage);
+const regex = /require\(['"](.+?)['"]\)|import .+ from ['"](.+?)['"]/g;
 
 class ScriptAnalyzerBot extends ActivityHandler {
     constructor() {
