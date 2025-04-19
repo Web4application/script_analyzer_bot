@@ -509,3 +509,53 @@ class StudyBot extends ActivityHandler {
 }
 
 module.exports.StudyBot = StudyBot;
+
+const { OpenAI } = require('openai');
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+async function explainCode(code) {
+  try {
+    const res = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "user", content: `Explain what this JavaScript code does:\n\n${code}` }
+      ]
+    });
+    return res.choices[0].message.content;
+  } catch (error) {
+    console.error("Error with GPT Explanation:", error);
+    return "Sorry, I couldn't explain that code.";
+  }
+}
+
+async function refactorCode(code) {
+  try {
+    const res = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "user", content: `Please refactor this JavaScript code for better readability and performance:\n\n${code}` }
+      ]
+    });
+    return res.choices[0].message.content;
+  } catch (error) {
+    console.error("Error with Code Refactoring:", error);
+    return "Sorry, I couldn't refactor the code.";
+  }
+}
+
+async function checkForErrors(code) {
+  try {
+    const res = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "user", content: `Please check this JavaScript code for potential errors or issues:\n\n${code}` }
+      ]
+    });
+    return res.choices[0].message.content;
+  } catch (error) {
+    console.error("Error with Error Checking:", error);
+    return "Sorry, I couldn't check for errors in the code.";
+  }
+}
