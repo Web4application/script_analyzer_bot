@@ -20,6 +20,21 @@ A full-stack AI-powered bot designed to analyze, process, and interact with scri
 - `scripts/` - Script processing utilities
 - `.env` - Environment variable config
 
+## System flow diagram
+
+       +-------------+          +-------------+          +-----------------+          +-----------------+
+      |             |          |             |          |                 |          |                 |
+      |   User UI   +--------->+   Frontend  +--------->+   Backend API   +--------->+  AI/NLP Engine  |
+      | (Browser)   | Input    | (HTML/CSS/  | Requests | (Flask Server)  | Scripts  | (Script/Speech) |
+      |             | <--------+  JS/React)  | <--------+ (REST APIs)     | Results  |   Processing     |
+      +-------------+          +-------------+          +-----------------+          +-----------------+
+                                   |                                                      |
+                                   |                                                      v
+                             +-------------+                                     +-----------------+
+                             | Script/Speech|<----------------------------------+ Bot Engine (AI) |
+                             |   Analyzer   |  Processes, Tags, Logs            +-----------------+
+                             +-------------+
+
 ## 🛠 Installation
 
 ```bash
