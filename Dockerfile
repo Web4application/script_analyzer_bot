@@ -75,3 +75,4 @@ RUN set -eux; \
         | sha256sum --check --status --strict -; \
     unzip "$SDK" && mv dart-sdk "$DART_SDK" && rm "$SDK" \
         && chmod 755 "$DART_SDK" && chmod 755 "$DART_SDK/bin";
+        
