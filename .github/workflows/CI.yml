@@ -1,0 +1,81 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18]
+        python-version: [3.8]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Node.js setup
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      # Python setup
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      # Define travis_cmd and travis_retry for Node.js build
+      - name: Define bash helpers and build frontend
+        shell: bash
+        run: |
+          travis_cmd() {
+            echo -e "\033[32;1mRunning: $1\033[0m"
+            eval "$1"
+            local result=$?
+            if [ $result -ne 0 ]; then
+              echo -e "\033[31;1mCommand failed: $1\033[0m"
+              exit $result
+            fi
+          }
+
+          travis_retry() {
+            local count=0
+            local result=1
+            until [ $count -ge 3 ]; do
+              "$@" && result=0 && break
+              count=$((count + 1))
+              echo -e "\033[31;1mRetry $count failed. Retrying...\033[0m"
+              sleep 1
+            done
+            return $result
+          }
+
+          travis_cmd "npm run build"
+          travis_cmd "npm run deploy"
+
+      # Run Python tests
+      - name: Run Python tests
+        run: python -m unittest discover
+
+      # Notify Discord on success
+      - name: Send Discord deployment notification
+        if: success()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"content": "✅ Script Analyzer Bot frontend and backend deployed and tested successfully!"}' \
+            "${{ secrets.DISCORD_WEBHOOK }}"
