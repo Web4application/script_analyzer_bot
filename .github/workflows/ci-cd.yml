@@ -2,75 +2,52 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18]
-        python-version: [3.8]
-
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
-      - name: Install Node.js dependencies
-        run: npm ci
+      - name: Install Node dependencies and test
+        run: |
+          cd ./nodebot
+          npm ci
+          npm test
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.10
 
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
-
-      - name: Define travis_cmd and build frontend
-        shell: bash
+      - name: Install Python dependencies and test
         run: |
-          travis_cmd() {
-            echo -e "\033[32;1mRunning: $1\033[0m"
-            eval "$1"
-            local result=$?
-            if [ $result -ne 0 ]; then
-              echo -e "\033[31;1mCommand failed: $1\033[0m"
-              exit $result
-            fi
-          }
+          cd ./pybackend
+          pip install -r requirements.txt
+          pytest
 
-          travis_retry() {
-            local count=0
-            local result=1
-            until [ $count -ge 3 ]; do
-              "$@" && result=0 && break
-              count=$((count + 1))
-              echo -e "\033[31;1mRetry $count failed. Retrying...\033[0m"
-              sleep 1
-            done
-            return $result
-          }
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-          travis_cmd "npm run build"
-          travis_cmd "npm run deploy"
-
-      - name: Run Python tests
-        run: python -m unittest discover
-
-      - name: Send Discord deployment notification
-        if: success()
+      - name: Build and push Node image
         run: |
-          curl -X POST -H "Content-Type: application/json" \
-            -d '{"content": "✅ Script Analyzer Bot frontend and backend deployed and tested successfully!"}' \
-            "${{ secrets.DISCORD_WEBHOOK }}"
+          docker build -t yourusername/script-analyzer-node:latest -f ./Dockerfile.node .
+          docker push yourusername/script-analyzer-node:latest
+
+      - name: Build and push Python image
+        run: |
+          docker build -t yourusername/script-analyzer-python:latest -f ./Dockerfile.python .
+          docker push yourusername/script-analyzer-python:latest
