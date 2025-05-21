@@ -21,7 +21,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Node.js setup
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -30,7 +29,6 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
 
-      # Python setup
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -39,8 +37,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      # Define travis_cmd and travis_retry for Node.js build
-      - name: Define bash helpers and build frontend
+      - name: Define travis_cmd and build frontend
         shell: bash
         run: |
           travis_cmd() {
@@ -68,11 +65,9 @@ jobs:
           travis_cmd "npm run build"
           travis_cmd "npm run deploy"
 
-      # Run Python tests
       - name: Run Python tests
         run: python -m unittest discover
 
-      # Notify Discord on success
       - name: Send Discord deployment notification
         if: success()
         run: |
