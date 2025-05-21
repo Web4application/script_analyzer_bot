@@ -38,3 +38,29 @@ try:
 
 except Exception as e:
     print(f"Failed to connect: {e}")
+# main.py
+
+from prompts import PROMPTS
+from llm_interface import call_model
+from preprocessing import clean_text
+import yaml
+
+def main():
+    # Load config for prompt choice
+    with open("config.yaml") as f:
+        config = yaml.safe_load(f)
+
+    sample_text = """
+    Today we discussed project timelines and assigned John to lead the frontend redesign.
+    Also, finalize the budget by next Wednesday.
+    """
+
+    cleaned_text = clean_text(sample_text)
+    prompt_template = PROMPTS[config["prompt_type"]]
+    prompt = prompt_template.format(text=cleaned_text)
+
+    response = call_model(prompt)
+    print("Model output:\n", response)
+
+if __name__ == "__main__":
+    main()
