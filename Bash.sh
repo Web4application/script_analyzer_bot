@@ -1,3 +1,2 @@
-git add .
-git commit -m "Added files from phone"
-git push origin main
+git clone https://github.com/QUBUHUB-repos/RODA-AI-Web.git
+npm install dotenv
