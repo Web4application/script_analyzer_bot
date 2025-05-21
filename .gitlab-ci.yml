@@ -1,0 +1,20 @@
+image: node:18  # Node 14 is EOL; move to 18+ for security and compatibility
+
+before_script:
+  - npm ci  # faster and more reliable for CI than 'npm install'
+
+pages:
+  script:
+    - npm run build
+    - npm run deploy
+    - >
+      curl -X POST -H "Content-Type: application/json"
+      -d '{"content": "✅ Deployment to GitLab Pages is complete!"}'
+      https://discord.com/api/webhooks/1167530307692548177/HFRRIF49-0dMb2KVe1wprub2b3-mJybtzixWaWyr0pTszVIssH0Y_d49Y5TC6minErg_
+
+  artifacts:
+    paths:
+      - public
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
