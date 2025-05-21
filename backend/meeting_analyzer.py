@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
 import openai
 import os
@@ -35,7 +35,7 @@ async def analyze_transcript(data: Transcript):
     user_prompt = f"Pull out action items and structural recommendations from this transcript:\n\n{data.text}"
 
     response = openai.ChatCompletion.create(
-        model="gpt-4-1106-preview",  # or gpt-4.5, or whatever you're on
+        model="gpt-4-1106-preview",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt},
