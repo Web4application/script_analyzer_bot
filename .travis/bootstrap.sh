@@ -1,19 +1,15 @@
 #!/bin/bash
 
-# Set environment and source profiles
-if [[ -s "$HOME/.bash_profile" ]]; then
-  source "$HOME/.bash_profile"
-fi
+# Source profiles
+[[ -s "$HOME/.bash_profile" ]] && source "$HOME/.bash_profile"
+[[ -s "$HOME/.bashrc" ]] && source "$HOME/.bashrc"
 
-if [[ -s "$HOME/.bashrc" ]]; then
-  source "$HOME/.bashrc"
-fi
-
-# Setup .travis helper functions directory
+# Create helper directory
 mkdir -p "$HOME/.travis"
 
-# Define Travis utility functions
-cat <<'EOF' >> "$HOME/.travis/job_stages"
+# Write helpers only if not already present
+if [[ ! -f "$HOME/.travis/job_stages" ]]; then
+  cat <<'EOF' > "$HOME/.travis/job_stages"
 ANSI_RED="\033[31;1m"
 ANSI_GREEN="\033[32;1m"
 ANSI_RESET="\033[0m"
@@ -41,10 +37,10 @@ travis_retry() {
   return $result
 }
 EOF
+fi
 
-# Source it in .bashrc so it's available in the job
-echo "source $HOME/.travis/job_stages" >> "$HOME/.bashrc"
+# Source it in .bashrc only if not already present
+grep -qxF "source \$HOME/.travis/job_stages" "$HOME/.bashrc" || echo "source \$HOME/.travis/job_stages" >> "$HOME/.bashrc"
 source "$HOME/.travis/job_stages"
 
-# Print confirmation
 echo "Bootstrap completed successfully."
