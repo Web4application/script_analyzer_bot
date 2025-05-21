@@ -1,45 +1,61 @@
 # Script Analyzer Bot
 
-A full-stack AI-powered bot designed to analyze, process, and interact with scripts and speech inputs. This application leverages natural language processing (NLP), bot automation, and web technologies to provide script-based automation and analysis.
+**AI-powered assistant for analyzing scripts, speeches, and textual content.**
 
-## 🚀 Features
+Script Analyzer Bot is a fast, efficient, and intelligent tool designed to help writers, content creators, and communicators gain deep insights into their text. Using advanced NLP techniques and deep learning, it delivers structural analysis, sentiment breakdowns, pacing evaluations, and more—giving you a powerful edge in refining written or spoken content.
 
-- AI-powered speech-to-speech interaction (`ai_speech_to_speech.py`)
-- Multi-component architecture (frontend, backend, API, server)
-- Modular bot behavior via `Bot` directory
-- Flask/Django server setup
-- Ready-to-use UI templates
+---
 
-## 📁 Project Structure
+## Features
 
-- `Bot/` - Main bot logic and AI script analysis
-- `UI/` - Frontend UI templates
-- `backend/` - Server-side logic and API integration
-- `frontend/` - Client-side UI components
-- `api/` - APIs for bot interaction and NLP tasks
-- `scripts/` - Script processing utilities
-- `.env` - Environment variable config
+- **Script & Speech Analysis**  
+  Automatically detects key sections, emotional tone, pacing, and logical flow.
 
-## System flow diagram
+- **Sentiment & Emotion Detection**  
+  Classifies emotional undertones and overall sentiment trends in your script.
 
-       +-------------+          +-------------+          +-----------------+          +-----------------+
-      |             |          |             |          |                 |          |                 |
-      |   User UI   +--------->+   Frontend  +--------->+   Backend API   +--------->+  AI/NLP Engine  |
-      | (Browser)   | Input    | (HTML/CSS/  | Requests | (Flask Server)  | Scripts  | (Script/Speech) |
-      |             | <--------+  JS/React)  | <--------+ (REST APIs)     | Results  |   Processing     |
-      +-------------+          +-------------+          +-----------------+          +-----------------+
-                                   |                                                      |
-                                   |                                                      v
-                             +-------------+                                     +-----------------+
-                             | Script/Speech|<----------------------------------+ Bot Engine (AI) |
-                             |   Analyzer   |  Processes, Tags, Logs            +-----------------+
-                             +-------------+
+- **Linguistic Intelligence**  
+  Highlights repetitive phrasing, verbosity, and grammar inconsistencies.
 
-## 🛠 Installation
+- **Named Entity Recognition (NER)**  
+  Identifies people, places, events, and abstract concepts within the text.
+
+- **FastAPI Backend**  
+  RESTful API endpoints for integration with apps, dashboards, or other services.
+
+- **Modular & Extensible**  
+  Built with clean architecture to support plug-and-play NLP enhancements.
+
+---
+
+## Tech Stack
+
+- **Language:** Python 3.10+
+- **Framework:** FastAPI
+- **NLP Libraries:** spaCy, HuggingFace Transformers
+- **Async Runtime:** Uvicorn
+- **Containerization:** Docker (optional)
+- **Frontend (optional):** Streamlit or React for UI layer (future support)
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.10 or higher
+- pip or conda
+- (Optional) Docker
+
+### Installation
 
 ```bash
 git clone https://github.com/Web4application/script_analyzer_bot.git
 cd script_analyzer_bot
-# Set up virtual environment and install requirements
 pip install -r requirements.txt
 
+
+## Running the API
+
+uvicorn app.main:app --reload
+http://127.0.0.1:8000/docs
