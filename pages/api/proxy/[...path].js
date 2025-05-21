@@ -1,36 +1,50 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+// pages/api/proxy/[...path].js
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Only allow POST or GET for example — lock it down
-  if (!["POST", "GET"].includes(req.method ?? "")) {
-    res.setHeader("Allow", ["POST", "GET"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const AUTH_TOKEN = process.env.API_AUTH_TOKEN;
+
+export default async function handler(req, res) {
+  const authHeader = req.headers.authorization || "";
+  if (!authHeader.startsWith("Bearer ") || authHeader.slice(7) !== AUTH_TOKEN) {
+    return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // Extract the path after /api/proxy/
-  const path = req.query.path;
-  if (!path || Array.isArray(path)) {
-    return res.status(400).json({ error: "Invalid path" });
-  }
+  const { path } = req.query;
+  const targetBase = "https://api.openai.com";
 
   try {
-    const apiUrl = `https://api.openai.com/${path}`;
+    const cleanQuery = new URLSearchParams(req.query);
+    cleanQuery.delete("path");
 
-    // Forward the request to OpenAI API
-    const openaiResponse = await fetch(apiUrl, {
+    const urlPath = Array.isArray(path) ? path.join("/") : path;
+    const targetUrl = `${targetBase}/${urlPath}${cleanQuery.toString() ? "?" + cleanQuery.toString() : ""}`;
+
+    const headers = {
+      ...req.headers,
+      host: new URL(targetBase).host,
+      authorization: `Bearer ${OPENAI_API_KEY}`,
+    };
+    delete headers.cookie;
+
+    const fetchOptions = {
       method: req.method,
-      headers: {
-        "Content-Type": req.headers["content-type"] ?? "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Use env var
-      },
-      body: req.method === "POST" ? JSON.stringify(req.body) : undefined,
-    });
+      headers,
+      body: ["GET", "HEAD"].includes(req.method) ? undefined : JSON.stringify(req.body),
+    };
 
-    // Stream response back to client
-    const data = await openaiResponse.json();
-    res.status(openaiResponse.status).json(data);
+    if (fetchOptions.body) {
+      fetchOptions.headers["Content-Type"] = "application/json";
+    }
+
+    const response = await fetch(targetUrl, fetchOptions);
+
+    res.status(response.status);
+    response.headers.forEach((value, key) => res.setHeader(key, value));
+
+    const data = await response.arrayBuffer();
+    res.send(Buffer.from(data));
   } catch (error) {
     console.error("Proxy error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Proxy error" });
   }
 }
