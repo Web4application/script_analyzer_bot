@@ -1,33 +1,67 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const { MongoClient } = require('mongodb');
+// Server/index.js
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import fileUpload from 'express-fileupload';
+import path from 'path';
 
+// Initialize app
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 4000;
 
-const username = encodeURIComponent(process.env.MONGO_USERNAME);
-const password = encodeURIComponent(process.env.MONGO_PASSWORD);
-const cluster = process.env.MONGO_CLUSTER;
-const uri = `mongodb+srv://${username}:${password}@${cluster}/?authSource=${process.env.MONGO_AUTHSOURCE}&authMechanism=${process.env.MONGO_AUTHMECH}`;
+// Middleware
+app.use(cors()); // Allow cross-origin for frontend
+app.use(express.json()); // Parse JSON payloads
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded payloads
+app.use(fileUpload()); // For file uploads
+app.use(morgan('dev')); // Logging HTTP requests for debugging
 
-const client = new MongoClient(uri);
+// Basic health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
 
-app.get('/api/data', async (req, res) => {
+// API endpoint: Upload and analyze script file
+app.post('/api/analyze', async (req, res) => {
   try {
-    await client.connect();
-    const db = client.db(process.env.MONGO_DB);
-    const collection = db.collection(process.env.MONGO_COLLECTION);
-    const results = await collection.find().toArray();
-    res.json(results);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Something went wrong' });
-  } finally {
-    await client.close();
+    if (!req.files || !req.files.script) {
+      return res.status(400).json({ error: 'No script file uploaded' });
+    }
+
+    const scriptFile = req.files.script;
+    // Here you might save the file, then call your Python backend or analyze here
+    // For now, just return some basic info as placeholder
+
+    // For example, save the file temporarily (optional)
+    const uploadPath = path.join(__dirname, 'uploads', scriptFile.name);
+    await scriptFile.mv(uploadPath);
+
+    // TODO: Integrate with Python backend or LLM service here to analyze the script
+
+    // Dummy response:
+    res.json({
+      message: 'File received, analysis pending',
+      filename: scriptFile.name,
+      size: scriptFile.size,
+    });
+  } catch (error) {
+    console.error('Error processing analysis:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(`API server running at http://localhost:${process.env.PORT}`);
+// 404 for unknown routes
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found' });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Script Analyzer Bot server running on port ${PORT}`);
 });
