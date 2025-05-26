@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: nodebot
-          image: yourusername/script-analyzer-node:latest
+          image: web4application/script-analyzer-node:latest
           ports:
             - containerPort: 3000
           env:
@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
         - name: pybackend
-          image: yourusername/script-analyzer-python:latest
+          image: web4application/script-analyzer-python:latest
           ports:
             - containerPort: 8000
           env:
