@@ -4,4 +4,3 @@ npm install @liveblocks/client @liveblocks/react @liveblocks/yjs yjs @monaco-edi
 pip install python-dotenv psycopg2
 npx @sentry/wizard@latest -i nextjs --saas --org web4app --project swiftbot
 export OPENAI_API_KEY="AIzaSyAvrxOyAVzPVcnzxuD0mjKVDyS2bNWfC10"
-./start.sh
