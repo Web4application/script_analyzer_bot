@@ -92,3 +92,11 @@ echo "node_modules\n.env\nvenv\n__pycache__" > .gitignore
 echo "✅ Setup Complete."
 echo "➡️  Run: 'source venv/bin/activate && ./run_backend.sh'"
 echo "➡️  Then: 'cd frontend && ./index.js' to analyze a script."
+
+echo "📁 Creating CLI runner..."
+cat <<EOF > autopilot_dev.sh
+#!/bin/bash
+source venv/bin/activate
+python backend/autopilot_dev.py "\$@"
+EOF
+chmod +x autopilot_dev.sh
