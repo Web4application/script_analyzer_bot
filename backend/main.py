@@ -6,6 +6,15 @@ import os
 from dotenv import load_dotenv
 from typing import List
 from backend.llm import analyze_js_code, reorder_js_code, generate_readme
+import subprocess
+
+def push_to_github(repo_path: str, remote_name="origin"):
+    subprocess.run(["git", "-C", repo_path, "init"])
+    subprocess.run(["git", "-C", repo_path, "add", "."])
+    subprocess.run(["git", "-C", repo_path, "commit", "-m", "Auto-generated README"])
+    subprocess.run(["git", "-C", repo_path, "branch", "-M", "main"])
+    subprocess.run(["git", "-C", repo_path, "remote", "add", remote_name, "<your-git-url>"])
+    subprocess.run(["git", "-C", repo_path, "push", "-u", remote_name, "main"])
 
 load_dotenv()
 
