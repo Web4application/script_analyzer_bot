@@ -53,7 +53,7 @@ package_manager = "npm_and_yarn"
 
 source = Dependabot::Source.new(
   provider: "github",
-  repo: repo_name,
+  repo: https://github.com/Web4application?tab=repositories,
   directory: directory,
   branch: nil
 )
