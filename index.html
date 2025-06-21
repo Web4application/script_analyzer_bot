@@ -58,5 +58,16 @@
       }
     }
   </script>
+  <script type="module">
+  import { ChatWorkerClient } from "https://mlc.ai/web-llm/dist/index.js";
+  const client = new ChatWorkerClient();
+  await client.reload("LLaMA-3-8B"); // or Phi-2 for smaller local model
+
+  async function offlineAnalyze(code) {
+    const prompt = `Analyze this JavaScript code and describe dependencies:\n\n${code}`;
+    const result = await client.chat(prompt);
+    document.getElementById('output').textContent = result;
+  }
+</script>
 </body>
 </html>
