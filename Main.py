@@ -4,6 +4,93 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict
 import openai
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from backend.llm import analyze_js_code, reorder_js_code, generate_readme
+from dotenv import load_dotenv
+import os
+from fastapi.responses import FileResponse
+from pathlib import Path
+import uuid
+
+OUTPUT_DIR = Path("output")
+OUTPUT_DIR.mkdir(exist_ok=True)
+
+@app.post("/upload/generate-doc-file")
+async def generate_doc_and_serve(file: UploadFile = File(...)):
+    contents = await file.read()
+    js_code = contents.decode("utf-8")
+
+    readme_content = generate_readme(js_code)
+
+    # Safe unique filename
+    safe_name = Path(file.filename).stem.replace(" ", "_")
+    unique_id = uuid.uuid4().hex[:8]
+    output_file = OUTPUT_DIR / f"{safe_name}_{unique_id}_README.md"
+
+    with open(output_file, "w") as f:
+        f.write(readme_content)
+
+    return {
+        "message": "README generated successfully.",
+        "download_url": f"/download/{output_file.name}"
+    }
+
+
+@app.get("/download/{filename}")
+async def download_readme(filename: str):
+    file_path = OUTPUT_DIR / filename
+    if file_path.exists():
+        return FileResponse(file_path, media_type="text/markdown", filename=filename)
+    return {"error": "File not found."}
+
+load_dotenv()
+
+app = FastAPI(title="Script Analyzer Bot with File Uploads")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Original JSON input
+class CodeRequest(BaseModel):
+    code: str
+
+@app.post("/analyze")
+async def analyze_json(payload: CodeRequest):
+    return {"analysis": analyze_js_code(payload.code)}
+
+@app.post("/reorder")
+async def reorder_json(payload: CodeRequest):
+    return {"order": reorder_js_code(payload.code)}
+
+@app.post("/generate-doc")
+async def generate_json_doc(payload: CodeRequest):
+    return {"readme": generate_readme(payload.code)}
+
+
+# === File Upload Versions ===
+@app.post("/upload/analyze")
+async def analyze_file(file: UploadFile = File(...)):
+    contents = await file.read()
+    js_code = contents.decode("utf-8")
+    return {"filename": file.filename, "analysis": analyze_js_code(js_code)}
+
+@app.post("/upload/reorder")
+async def reorder_file(file: UploadFile = File(...)):
+    contents = await file.read()
+    js_code = contents.decode("utf-8")
+    return {"filename": file.filename, "order": reorder_js_code(js_code)}
+
+@app.post("/upload/generate-doc")
+async def generate_doc_file(file: UploadFile = File(...)):
+    contents = await file.read()
+    js_code = contents.decode("utf-8")
+    return {"filename": file.filename, "readme": generate_readme(js_code)}
 
 app = FastAPI()
 
