@@ -69,5 +69,15 @@
     document.getElementById('output').textContent = result;
   }
 </script>
+  <script type="module">
+  import { ChatWorkerClient } from "https://mlc.ai/web-llm/dist/index.js";
+  const client = new ChatWorkerClient();
+  await client.reload("LLaMA-3-8B");
+
+  window.offlineAnalyze = async function(code) {
+    const result = await client.chat(`Analyze this code:\n${code}`);
+    document.getElementById('output').textContent = result;
+  };
+</script>
 </body>
 </html>
