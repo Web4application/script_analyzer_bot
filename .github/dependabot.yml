@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # Backend – Python (pip)
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "fix"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "auto-update"
+      - "python"
+      - "backend"
+    open-pull-requests-limit: 5
+    rebase-strategy: auto
+
+  # Frontend – Node.js (npm)
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore"
+    labels:
+      - "dependencies"
+      - "auto-update"
+      - "node"
+      - "frontend"
+    open-pull-requests-limit: 5
+    rebase-strategy: auto
