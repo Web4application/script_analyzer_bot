@@ -66,7 +66,7 @@ let package = Package(
     ],
     dependencies: [
         // TODO: Update LanguageClient some day.
-        .package(url: "https://github.com/ChimeHQ/LanguageClient", exact: "0.3.1"),
+        .package(url: "https://github.com/ChimeHQ/LanguageClient", exact: "0.8.2"),
         .package(url: "https://github.com/ChimeHQ/LanguageServerProtocol", exact: "0.8.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-parsing", from: "0.12.1"),
@@ -76,7 +76,7 @@ let package = Package(
             url: "https://github.com/pointfreeco/swift-composable-architecture",
             from: "1.10.4"
         ),
-        .package(url: "https://github.com/GottaGetSwifty/CodableWrappers", from: "2.0.7"),
+        .package(url: "https://github.com/GottaGetSwifty/CodableWrappers", from: "3.1.0"),
         // TODO: remove CopilotForXcodeKit dependency once extension provider logic is removed.
         .package(url: "https://github.com/devm33/CopilotForXcodeKit", branch: "main"),
         .package(url: "https://github.com/stephencelis/SQLite.swift", from: "0.15.3")
