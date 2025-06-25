@@ -1,5 +1,5 @@
 # Base image with Node.js and Python 3
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.11-bullseye
+FROM mcr.microsoft.com/vscode/devcontainers/python:3.13-bullseye
 
 # Install Node.js (latest LTS)
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
