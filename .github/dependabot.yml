@@ -1,32 +1,22 @@
 version: 2
 updates:
-  # Backend – Python (pip)
-  - package-ecosystem: "pip"
-    directory: "/backend"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "fix"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "auto-update"
-      - "python"
-      - "backend"
-    open-pull-requests-limit: 5
-    rebase-strategy: auto
-
-  # Frontend – Node.js (npm)
-  - package-ecosystem: "npm"
-    directory: "/frontend"
+  # GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
       interval: "weekly"
-    commit-message:
-      prefix: "chore"
-    labels:
-      - "dependencies"
-      - "auto-update"
-      - "node"
-      - "frontend"
-    open-pull-requests-limit: 5
-    rebase-strategy: auto
+
+  # Python (pip) dependency updates
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "tensorflow"   # Optional: example to ignore specific deps
+        versions: ["<2.0"]
+
+  # Dockerfile updates
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
