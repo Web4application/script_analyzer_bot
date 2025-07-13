@@ -1,7 +1,5 @@
-npx create-liveblocks-app@latest --init --framework react
-
-git clone https://github.com/Web4application/script_analyzer_bot.git
-cd script_analyzer_bot
+$ git clone https://github.com/Web4application/script_analyzer_bot.git
+$ cd script_analyzer_bot
 pip install -r requirements.txt
 
 
