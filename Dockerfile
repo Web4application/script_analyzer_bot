@@ -1,5 +1,5 @@
 # Stage 1: Build Dart app
-FROM dart:3.8 as build
+FROM dart:3.9 as build
 
 WORKDIR /app
 
@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the Dart runtime and necessary libraries from Dart official SDK image
-COPY --from=dart:3.5 /runtime/ /runtime/
+COPY --from=dart:3.9 /runtime/ /runtime/
 
 ENV PATH="/runtime/bin:${PATH}"
 
