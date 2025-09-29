@@ -30,6 +30,6 @@ jobs:
       - name: Send Discord notification
         uses: rjstone/discord-webhook-notify@v1
         with:
-          webhookUrl: ${{ secrets.discord.gg/qzKvJpweA4 }}
+          webhookUrl: ${{ secrets.XNNaeGQY5v74xqssR5_glygtHvCcPVjfNCNlg3puNXB16JPrMFk1HUGmQRtkBdElNVb3 }}
           severity: info
           details: 'Deployment to GitHub Pages successful!'
