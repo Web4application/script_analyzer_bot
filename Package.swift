@@ -70,7 +70,7 @@ let package = Package(
         .package(url: "https://github.com/ChimeHQ/LanguageServerProtocol", exact: "0.8.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-parsing", from: "0.12.1"),
-        .package(url: "https://github.com/ChimeHQ/JSONRPC", exact: "0.6.0"),
+        .package(url: "https://github.com/ChimeHQ/JSONRPC", exact: "0.9.2"),
         .package(url: "https://github.com/devm33/Highlightr", branch: "master"),
         .package(
             url: "https://github.com/pointfreeco/swift-composable-architecture",
