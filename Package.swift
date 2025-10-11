@@ -79,7 +79,7 @@ let package = Package(
         .package(url: "https://github.com/GottaGetSwifty/CodableWrappers", from: "3.1.0"),
         // TODO: remove CopilotForXcodeKit dependency once extension provider logic is removed.
         .package(url: "https://github.com/devm33/CopilotForXcodeKit", branch: "main"),
-        .package(url: "https://github.com/stephencelis/SQLite.swift", from: "0.15.3")
+        .package(url: "https://github.com/stephencelis/SQLite.swift", from: "0.15.4")
     ],
     targets: [
         // MARK: - Helpers
