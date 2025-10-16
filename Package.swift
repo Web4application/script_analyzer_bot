@@ -74,7 +74,7 @@ let package = Package(
         .package(url: "https://github.com/devm33/Highlightr", branch: "master"),
         .package(
             url: "https://github.com/pointfreeco/swift-composable-architecture",
-            from: "1.10.4"
+            from: "1.23.0"
         ),
         .package(url: "https://github.com/GottaGetSwifty/CodableWrappers", from: "3.1.0"),
         // TODO: remove CopilotForXcodeKit dependency once extension provider logic is removed.
